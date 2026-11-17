@@ -37,13 +37,13 @@ jobs:
       - name: Ruff format check
         run: uv run --locked ruff format --check .
 
-      - name: Run pytest
-        run: uv run --locked pytest -v
-
       - name: Install Pandoc and XeLaTeX
         run: |
           sudo apt-get update
           sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-latex-extra
+
+      - name: Run pytest
+        run: uv run --locked pytest -v
 
       - name: Build public mock CV
         run: uv run --locked python scripts/build_cv.py --input examples/john_smith_cv.md --output-dir dist
