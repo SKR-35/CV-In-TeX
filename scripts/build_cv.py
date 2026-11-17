@@ -118,6 +118,26 @@ def parse_portfolio(md: str) -> list[dict[str, str]]:
     return items
 
 
+def render_portfolio_cell(value: str, kind: str) -> str:
+    """Render portfolio cells without Pandoc list spacing or justified tool names."""
+    if kind == "tools":
+        # Legacy Word-to-Markdown exports use `- Tool,; - Tool,; - Tool`.
+        tools = [
+            part.strip().lstrip("- ").rstrip(" ,;")
+            for part in re.split(r";|\n", value)
+            if part.strip().lstrip("- ").rstrip(" ,;")
+        ]
+        return r"{\RaggedRight " + latex_escape(", ".join(tools)) + r"\par}"
+    if kind == "details":
+        lines = [line.strip() for line in value.splitlines() if line.strip()]
+        # Plain lines avoid itemize's topsep, which lowered this column's text.
+        rendered = [
+            r"\textendash\ " + latex_escape(line.removeprefix("-").strip()) for line in lines
+        ]
+        return r"{\RaggedRight " + r"\par ".join(rendered) + r"\par}"
+    return r"{\RaggedRight " + markdown_to_latex(value) + r"\par}"
+
+
 def make_tex(source: str) -> str:
     name, subtitle, pages, portfolio = parse_pages(source)
     template = (ROOT / "templates" / "cv.tex").read_text(encoding="utf-8")
@@ -139,9 +159,9 @@ def make_tex(source: str) -> str:
     cv_body = "\n\\newpage\n".join(bodies)
     portfolio_rows = []
     for p in parse_portfolio(portfolio):
-        cells = [latex_escape(p["name"])]
+        cells = [render_portfolio_cell(p["name"], "name")]
         for key in ("description", "details", "tools"):
-            cells.append(markdown_to_latex(p[key]))
+            cells.append(render_portfolio_cell(p[key], key))
         portfolio_rows.append(" & ".join(cells) + r" \\ \hline")
     portfolio_tex = ""
     if portfolio_rows:

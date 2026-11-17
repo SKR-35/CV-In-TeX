@@ -29,3 +29,21 @@ def test_escape_latex():
 def test_real_markdown_is_not_part_of_public_repo():
     root = Path(__file__).resolve().parents[1]
     assert not (root / "Archive" / "my_cv.md").exists()
+
+
+def test_portfolio_tools_clean_separators():
+    result = module.render_portfolio_cell(
+        "- QlikView Server,; - QlikView SAP Connector,; - VBS", "tools"
+    )
+    assert "QlikView Server, QlikView SAP Connector, VBS" in result
+    assert ";" not in result
+    assert result.startswith(r"{\RaggedRight ")
+
+
+def test_portfolio_details_have_no_list_top_spacing():
+    result = module.render_portfolio_cell(
+        "- First responsibility\n- Second responsibility", "details"
+    )
+    assert r"\textendash\ First responsibility" in result
+    assert r"\par \textendash\ Second responsibility" in result
+    assert r"\begin{itemize}" not in result
