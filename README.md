@@ -71,11 +71,12 @@ uv run python scripts/build_cv.py --input "D:\Documents\Resume\resume.md" --outp
 
 ## Color themes
 
-Choose from eight built-in color palettes using `--theme`. The default is **Sage Green**; theme selection changes accent colors only, leaving the Markdown content and document layout unchanged.
+The default is **monochrome** (`none`). Choose one of eight optional color palettes using `--theme`. Theme selection changes accent colors only; Markdown content and document layout remain unchanged.
 
 | Theme | CLI value | Accent colors |
 | --- | --- | --- |
-| Sage Green (default) | `sage-green` | `#A9D18E` · `#52734D` |
+| Monochrome (default) | `none` | `#B0B0B0` · `#4A4A4A` |
+| Sage Green | `sage-green` | `#A9D18E` · `#52734D` |
 | Forest Green | `forest-green` | `#56846B` · `#285640` |
 | Navy Blue | `navy-blue` | `#547DA3` · `#254663` |
 | Slate Blue | `slate-blue` | `#8999B6` · `#485C80` |
@@ -90,7 +91,7 @@ Build the example CV with a chosen palette:
 uv run python scripts/build_cv.py --input examples/john_smith_cv.md --theme navy-blue --output-dir dist
 ```
 
-Or use the default palette by omitting `--theme`.
+Omit `--theme` to generate the default monochrome CV. You can also specify `--theme none` explicitly.
 
 ## Markdown document structure
 
