@@ -12,6 +12,7 @@ The repository includes a complete, fictional **John Smith** example so you can 
 - **Two-column CV pages:** separate sidebar information from the main professional narrative.
 - **Optional project portfolio:** generate a landscape, four-column project table after the CV.
 - **PDF and TeX output:** produce a ready-to-share PDF and retain the generated LaTeX source.
+- **Eight color themes:** customize accent colors without changing Markdown content or document structure.
 - **Flexible input/output paths:** read Markdown from any local directory; write results next to the source or to a chosen output folder.
 - **Reproducible Python tooling:** manage the development environment with [uv](https://docs.astral.sh/uv/).
 - **Quality checks:** pytest tests and a GitHub Actions workflow for the example build.
@@ -36,7 +37,7 @@ xelatex --version
 
 ## Quick start
 
-Clone the repository, open a terminal in the project directory, and install the development dependencies:
+Clone the repository, open a terminal in the project directory and install the development dependencies:
 
 ```powershell
 uv sync
@@ -67,6 +68,29 @@ To choose another output directory:
 ```powershell
 uv run python scripts/build_cv.py --input "D:\Documents\Resume\resume.md" --output-dir "D:\Documents\Exports"
 ```
+
+## Color themes
+
+Choose from eight built-in color palettes using `--theme`. The default is **Sage Green**; theme selection changes accent colors only, leaving the Markdown content and document layout unchanged.
+
+| Theme | CLI value | Accent colors |
+| --- | --- | --- |
+| Sage Green (default) | `sage-green` | `#A9D18E` · `#52734D` |
+| Forest Green | `forest-green` | `#56846B` · `#285640` |
+| Navy Blue | `navy-blue` | `#547DA3` · `#254663` |
+| Slate Blue | `slate-blue` | `#8999B6` · `#485C80` |
+| Teal | `teal` | `#62A9A1` · `#286E69` |
+| Burgundy | `burgundy` | `#9B6270` · `#643644` |
+| Warm Sand | `warm-sand` | `#D4B98C` · `#80643C` |
+| Graphite | `graphite` | `#858B91` · `#3B4249` |
+
+Build the example CV with a chosen palette:
+
+```powershell
+uv run python scripts/build_cv.py --input examples/john_smith_cv.md --theme navy-blue --output-dir dist
+```
+
+Or use the default palette by omitting `--theme`.
 
 ## Markdown document structure
 
@@ -112,7 +136,7 @@ Add `<!-- PORTFOLIO -->` after the CV pages, followed by project entries:
 **Tools Used:** Python, SQL, pytest
 ```
 
-Each project becomes a row in a landscape table with four columns: **Project Name**, **Project Description**, **Responsibilities/Details**, and **Tools Used**. For the full syntax, see [`examples/john_smith_cv.md`](examples/john_smith_cv.md).
+Each project becomes a row in a landscape table with four columns: **Project Name**, **Project Description**, **Responsibilities/Details** and **Tools Used**. For the full syntax, see [`examples/john_smith_cv.md`](examples/john_smith_cv.md).
 
 ## Project layout
 
@@ -159,13 +183,7 @@ The GitHub Actions workflow runs the Python tests and builds the fictional sampl
 
 ## Notes and limitations
 
-- CV pages use explicit `PAGE`, `SIDEBAR`, and `MAIN` markers; automatic pagination of the two-column CV is not implemented.
+- CV pages use explicit `PAGE`, `SIDEBAR` and `MAIN` markers; automatic pagination of the two-column CV is not implemented.
 - The portfolio table can span pages as needed.
 - Visual appearance depends on the LaTeX template and available TeX packages/fonts.
 - The tool is a document generator, not a graphical résumé editor.
-
-## License
-
-Released under the [Apache License 2.0](LICENSE).
-
-Contributions, bug reports, and suggestions are welcome.
