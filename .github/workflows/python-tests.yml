@@ -1,0 +1,52 @@
+name: Python Quality and Mock PDF Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint, test, and build mock CV
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Verify dependency lock
+        run: uv lock --check
+
+      - name: Install project dependencies
+        run: uv sync --locked
+
+      - name: Ruff lint
+        run: uv run --locked ruff check .
+
+      - name: Ruff format check
+        run: uv run --locked ruff format --check .
+
+      - name: Run pytest
+        run: uv run --locked pytest -v
+
+      - name: Install Pandoc and XeLaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-latex-extra
+
+      - name: Build public mock CV
+        run: uv run --locked python scripts/build_cv.py --input examples/john_smith_cv.md --output-dir dist
+
+      - name: Verify generated PDF
+        run: test -s dist/john_smith_cv.pdf
