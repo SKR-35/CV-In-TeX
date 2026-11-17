@@ -1,0 +1,24 @@
+# Never commit personal documents
+/Archive/
+/private/
+.env
+.env.*
+!.env.example
+# Generated outputs
+/dist/
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+DECISIONS.md
+*.pdf
+*.tex
