@@ -1,3 +1,8 @@
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=blue)
+![Pandoc](https://img.shields.io/badge/Pandoc-Markdown%20to%20LaTeX-5277C3)
+![XeLaTeX](https://img.shields.io/badge/PDF-XeLaTeX-008080)
+[![CI](https://img.shields.io/github/actions/workflow/status/SKR-35/CV-In-TeX/python-tests.yml?branch=master&label=CI&logo=githubactions&logoColor=white)](https://github.com/SKR-35/CV-In-TeX/actions/workflows/python-tests.yml)
+
 # CV-in-TeX
 
 **Write in Markdown. Publish with LaTeX.**
