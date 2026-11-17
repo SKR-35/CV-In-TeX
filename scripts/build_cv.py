@@ -15,6 +15,17 @@ PAGE_RE = re.compile(r"^<!--\s*PAGE\s+(\d+)\s*-->\s*$", re.M)
 SECTION_RE = re.compile(r"^##\s+(.+?)\s*$", re.M)
 PORTFOLIO_RE = re.compile(r"^<!--\s*PORTFOLIO\s*-->\s*$", re.M)
 
+THEMES = {
+    "sage-green": ("A9D18E", "52734D"),
+    "forest-green": ("56846B", "285640"),
+    "navy-blue": ("547DA3", "254663"),
+    "slate-blue": ("8999B6", "485C80"),
+    "teal": ("62A9A1", "286E69"),
+    "burgundy": ("9B6270", "643644"),
+    "warm-sand": ("D4B98C", "80643C"),
+    "graphite": ("858B91", "3B4249"),
+}
+
 
 def latex_escape(s: str) -> str:
     return (
@@ -138,7 +149,9 @@ def render_portfolio_cell(value: str, kind: str) -> str:
     return r"{\RaggedRight " + markdown_to_latex(value) + r"\par}"
 
 
-def make_tex(source: str) -> str:
+def make_tex(source: str, theme: str = "sage-green") -> str:
+    if theme not in THEMES:
+        raise ValueError(f"Unknown theme: {theme}. Available: {', '.join(THEMES)}")
     name, subtitle, pages, portfolio = parse_pages(source)
     template = (ROOT / "templates" / "cv.tex").read_text(encoding="utf-8")
     bodies = []
@@ -186,15 +199,20 @@ def make_tex(source: str) -> str:
             + "\n"
             + r"\end{longtable}\end{landscape}"
         )
+    light, dark = THEMES[theme]
     return (
-        template.replace("%%NAME%%", latex_escape(name))
+        template.replace("%%ACCENT%%", light)
+        .replace("%%ACCENT_DARK%%", dark)
+        .replace("%%NAME%%", latex_escape(name))
         .replace("%%SUBTITLE%%", latex_escape(subtitle))
         .replace("%%CV_BODY%%", cv_body)
         .replace("%%PORTFOLIO%%", portfolio_tex)
     )
 
 
-def build(source: Path, output_dir: Path, *, keep_tex: bool = True) -> Path:
+def build(
+    source: Path, output_dir: Path, *, keep_tex: bool = True, theme: str = "sage-green"
+) -> Path:
     source = source.expanduser().resolve()
     if not source.is_file():
         raise FileNotFoundError(f"Input Markdown not found: {source}")
@@ -207,7 +225,7 @@ def build(source: Path, output_dir: Path, *, keep_tex: bool = True) -> Path:
     with tempfile.TemporaryDirectory(prefix="cv-in-tex-") as temp:
         work = Path(temp)
         tex = work / (source.stem + ".tex")
-        tex.write_text(make_tex(source.read_text(encoding="utf-8")), encoding="utf-8")
+        tex.write_text(make_tex(source.read_text(encoding="utf-8"), theme=theme), encoding="utf-8")
         for _ in range(2):
             subprocess.run(
                 [
@@ -240,9 +258,15 @@ def main() -> int:
         "--input", required=True, type=Path, help="Markdown source on any local drive"
     )
     parser.add_argument("--output-dir", type=Path, help="Defaults to the input Markdown directory")
+    parser.add_argument(
+        "--theme",
+        choices=tuple(THEMES),
+        default="sage-green",
+        help="Color palette (default: sage-green)",
+    )
     args = parser.parse_args()
     try:
-        output = build(args.input, args.output_dir or args.input.parent)
+        output = build(args.input, args.output_dir or args.input.parent, theme=args.theme)
     except (OSError, ValueError, RuntimeError, subprocess.CalledProcessError) as exc:
         print(f"Build failed: {exc}", file=sys.stderr)
         return 1

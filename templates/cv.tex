@@ -1,0 +1,33 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=14mm,top=15mm,bottom=15mm]{geometry}
+\usepackage{fontspec}
+\IfFontExistsTF{Arial}{\setmainfont{Arial}}{\setmainfont{Liberation Sans}}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable,array,pdflscape,colortbl}
+\usepackage{ragged2e}
+\usepackage{microtype}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\definecolor{accent}{HTML}{%%ACCENT%%}
+\definecolor{accentdark}{HTML}{%%ACCENT_DARK%%}
+\definecolor{ink}{HTML}{4A4A4A}
+\hypersetup{colorlinks=true,urlcolor=ink,linkcolor=ink}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist[itemize]{leftmargin=12pt,itemsep=1pt,topsep=2pt,parsep=0pt}
+\renewcommand{\labelitemi}{--}
+\newcommand{\cvheading}[1]{\par\vspace{6pt}{\color{accentdark}\bfseries\large #1}\par\vspace{2pt}{\color{accent}\hrule}\vspace{5pt}}
+\newcommand{\sideheading}[1]{\par\vspace{8pt}{\color{accent}\hrule}\vspace{5pt}{\color{accentdark}\bfseries\normalsize #1}\par\vspace{4pt}}
+\arrayrulecolor{accentdark}
+\begin{document}
+\color{ink}
+\begin{center}
+{\Huge\bfseries %%NAME%%}\\[4pt]
+{\normalsize %%SUBTITLE%%}\\[7pt]
+{\color{accent}\rule{0.62\linewidth}{0.5pt}}
+\end{center}
+\vspace{5pt}
+%%CV_BODY%%
+%%PORTFOLIO%%
+\end{document}

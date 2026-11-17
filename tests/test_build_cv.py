@@ -47,3 +47,19 @@ def test_portfolio_details_have_no_list_top_spacing():
     assert r"\textendash\ First responsibility" in result
     assert r"\par \textendash\ Second responsibility" in result
     assert r"\begin{itemize}" not in result
+
+
+def test_theme_colors_and_content_are_independent():
+    source = "# John Smith\n> Engineer\n<!-- PAGE 1 -->\n<!-- SIDEBAR -->\n## PHONE\nN/A\n<!-- MAIN -->\n## SUMMARY\nHello.\n"
+    sage = module.make_tex(source, theme="sage-green")
+    navy = module.make_tex(source, theme="navy-blue")
+    assert r"\definecolor{accent}{HTML}{A9D18E}" in sage
+    assert r"\definecolor{accent}{HTML}{547DA3}" in navy
+    assert "John Smith" in sage and "John Smith" in navy
+    assert "Hello." in sage and "Hello." in navy
+    assert sage.replace("A9D18E", "547DA3").replace("52734D", "254663") == navy
+
+
+def test_invalid_theme_rejected():
+    with pytest.raises(ValueError, match="Unknown theme"):
+        module.make_tex("# John Smith", theme="invalid")
